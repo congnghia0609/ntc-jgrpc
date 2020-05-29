@@ -1,0 +1,72 @@
+// @author nghiatc
+// @since May 29, 2020
+
+syntax = "proto3";
+
+package ngrpc;
+
+//// Java Option
+// Chỉ cần thêm file calculator.proto vào thư mục [Project-Java]/src/main/proto 
+// thì các extension + plugin Maven tự gen gRPC vào thư mục target/generated-sources.
+////
+option java_package="com.ntc.ngrpc";
+option java_multiple_files = true;
+option java_outer_classname = "CalculatorPB";
+//option objc_class_prefix = "CPB";
+
+
+//// Golang Option
+// protoc ngrpc/calculator.proto --go_out=plugins=grpc:.
+////
+option go_package="ngrpc";
+
+
+service CalculatorService {
+    rpc Sum(SumRequest) returns (SumResponse) {}
+    rpc SumWithDeadline(SumRequest) returns (SumResponse) {}
+    rpc PrimeNumberDecomposition(PNDRequest) returns (stream PNDResponse) {}
+    rpc Average(stream AverageRequest) returns (AverageResponse) {}
+    rpc FindMax(stream FindMaxRequest) returns (stream FindMaxResponse) {}
+    rpc Square(SquareRequest) returns (SquareResponse) {}
+}
+
+message SumRequest {
+    int32 num1 = 1;
+    int32 num2 = 2;
+}
+
+message SumResponse {
+    int32 result = 1;
+}
+
+message PNDRequest {
+    int32 number = 1;
+}
+
+message PNDResponse {
+    int32 result = 1;
+}
+
+message AverageRequest {
+    float num = 1;
+}
+
+message AverageResponse {
+    float result = 1;
+}
+
+message FindMaxRequest {
+    int32 num = 1;
+}
+
+message FindMaxResponse {
+    int32 max = 1;
+}
+
+message SquareRequest {
+    int32 num = 1;
+}
+
+message SquareResponse {
+    double squareRoot = 1;
+}
