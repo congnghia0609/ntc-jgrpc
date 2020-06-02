@@ -35,7 +35,7 @@ public class CalServer {
     private Server server;
     
     public void start() throws IOException {
-        int port = 3333;
+        int port = 3334;
         
         //====== Begin Mode SSL ======//
         File certFile = new File("ssl/server.crt");
