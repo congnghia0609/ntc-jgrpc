@@ -45,7 +45,7 @@ public class CalClient {
     public static void main(String[] args) {
         try {
             // Access a service running on the local machine on port 3333
-            String target = "localhost:3330"; // grpc-haproxy
+            String target = "localhost:3330"; // grpc-haproxy | grpc-nginx
             //String target = "localhost:3334"; // grpc-java
 
             // Create a communication channel to the server, known as a Channel. Channels are thread-safe
@@ -53,14 +53,14 @@ public class CalClient {
             // them until the application shuts down.
             
             // 1. No SSL
-            //ManagedChannel channel = ManagedChannelBuilder.forTarget(target).usePlaintext().build();
+//            ManagedChannel channel = ManagedChannelBuilder.forTarget(target).usePlaintext().build();
             
             // 2. With server authentication SSL/TLS
             //ManagedChannel channel = ManagedChannelBuilder.forTarget(target).useTransportSecurity().build();
             
             // 3. With server authentication SSL/TLS; custom CA root certificates; not on Android.
             // NettyChannelBuilder or OkHttpChannelBuilder
-//            File certFile = new File("ssl/client.crt");
+            //File certFile = new File("ssl/client.crt");
             File certFile = new File("/home/nghiatc/go-projects/src/ntc-ggrpc/ssl/client.crt");
             ManagedChannel channel = NettyChannelBuilder.forTarget(target).sslContext(GrpcSslContexts.forClient().trustManager(certFile).build()).build();
 
