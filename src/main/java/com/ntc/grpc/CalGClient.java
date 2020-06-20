@@ -13,85 +13,93 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.ntc.grpc;
 
-import com.ntc.ngrpc.*;
-import io.grpc.Channel;
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
+import com.ntc.ngrpc.AverageRequest;
+import com.ntc.ngrpc.AverageResponse;
+import com.ntc.ngrpc.CalculatorServiceGrpc;
+import com.ntc.ngrpc.FindMaxRequest;
+import com.ntc.ngrpc.FindMaxResponse;
+import com.ntc.ngrpc.PNDRequest;
+import com.ntc.ngrpc.PNDResponse;
+import com.ntc.ngrpc.SquareRequest;
+import com.ntc.ngrpc.SquareResponse;
+import com.ntc.ngrpc.SumRequest;
+import com.ntc.ngrpc.SumResponse;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
-import io.grpc.netty.shaded.io.grpc.netty.GrpcSslContexts;
-import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
 import io.grpc.stub.StreamObserver;
-import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import javax.net.ssl.SSLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author nghiatc
- * @since May 29, 2020
+ * @since Jun 20, 2020
  */
-public class CalClient {
+public class CalGClient {
+    private static final Logger log = LoggerFactory.getLogger(CalGClient.class);
+    
+    private String name;
+    private GClient gc;
 
-    private static final Logger log = LoggerFactory.getLogger(CalClient.class);
+    public String getName() {
+        return name;
+    }
 
+    public GClient getGClient() {
+        return gc;
+    }
+
+    public CalGClient(String name) throws SSLException {
+        this.name = name;
+        gc = GClient.getInstance(name);
+    }
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         try {
-            // Access a service running on the local machine on port 3333
-            String target = "localhost:3330"; // grpc-haproxy | grpc-nginx
-            //String target = "localhost:3334"; // grpc-java
+            CalGClient cgc = new CalGClient("tutorial");
+            
+            cgc.callSum();
 
-            // Create a communication channel to the server, known as a Channel. Channels are thread-safe
-            // and reusable. It is common to create channels at the beginning of your application and reuse
-            // them until the application shuts down.
+            cgc.callSumWithDeadline(1000);
+            cgc.callSumWithDeadline(5000);
             
-            // 1. No SSL
-//            ManagedChannel channel = ManagedChannelBuilder.forTarget(target).usePlaintext().build();
+            cgc.callPND();
             
-            // 2. With server authentication SSL/TLS
-            //ManagedChannel channel = ManagedChannelBuilder.forTarget(target).useTransportSecurity().build();
+            cgc.callPNDBlock();
             
-            // 3. With server authentication SSL/TLS; custom CA root certificates; not on Android.
-            // NettyChannelBuilder or OkHttpChannelBuilder
-            File certFile = new File("ssl/client.crt");
-            ManagedChannel channel = NettyChannelBuilder.forTarget(target).sslContext(GrpcSslContexts.forClient().trustManager(certFile).build()).build();
+            cgc.callAverage();
             
-            callSum(channel);
-
-            //callSumWithDeadline(channel, 1000);
-            //callSumWithDeadline(channel, 5000);
+            cgc.callFindMax();
             
-            //callPND(channel);
+            cgc.callSquare(9);
             
-            //callPNDBlock(channel);
-            
-            //callAverage(channel);
-            
-            callFindMax(channel);
-            
-            //callSquare(channel, -2);
-            
-            
-            // ManagedChannels use resources like threads and TCP connections. To prevent leaking these
-            // resources the channel should be shut down when it will no longer be used. If it may be used
-            // again leave it running.
-            channel.shutdownNow().awaitTermination(5, TimeUnit.SECONDS);
+            cgc.shutdown();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+    
+    public void shutdown() {
+        if (gc != null) {
+            gc.shutdown();
+        }
+    }
 
-    public static void callSum(Channel channel) {
+    public void callSum() {
         try {
             System.out.println("Call sum...");
-            CalculatorServiceGrpc.CalculatorServiceBlockingStub stub = CalculatorServiceGrpc.newBlockingStub(channel);
+            gc = GClient.getInstance(name);
+            CalculatorServiceGrpc.CalculatorServiceBlockingStub stub = CalculatorServiceGrpc.newBlockingStub(gc.getChannel());
             SumRequest req = SumRequest.newBuilder().setNum1(3).setNum2(5).build();
             SumResponse resp = stub.sum(req);
             log.info("sum api response " + resp.getResult());
@@ -100,10 +108,11 @@ public class CalClient {
         }
     }
 
-    public static void callSumWithDeadline(Channel channel, long time) {
+    public void callSumWithDeadline(long time) {
         try {
             System.out.println("Call sumWithDeadline...");
-            CalculatorServiceGrpc.CalculatorServiceBlockingStub stub = CalculatorServiceGrpc.newBlockingStub(channel);
+            gc = GClient.getInstance(name);
+            CalculatorServiceGrpc.CalculatorServiceBlockingStub stub = CalculatorServiceGrpc.newBlockingStub(gc.getChannel());
             SumRequest req = SumRequest.newBuilder().setNum1(3).setNum2(5).build();
             SumResponse resp = stub.withDeadlineAfter(time, TimeUnit.MILLISECONDS).sumWithDeadline(req);
             log.info("sum api response " + resp.getResult());
@@ -112,10 +121,11 @@ public class CalClient {
         }
     }
 
-    public static void callPND(Channel channel) {
+    public void callPND() {
         try {
             System.out.println("Call PND...");
-            CalculatorServiceGrpc.CalculatorServiceStub stub = CalculatorServiceGrpc.newStub(channel);
+            gc = GClient.getInstance(name);
+            CalculatorServiceGrpc.CalculatorServiceStub stub = CalculatorServiceGrpc.newStub(gc.getChannel());
             PNDRequest req = PNDRequest.newBuilder().setNumber(120).build();
 
             StreamObserver<PNDResponse> toServer = new StreamObserver<PNDResponse>() {
@@ -136,16 +146,17 @@ public class CalClient {
             };
             stub.primeNumberDecomposition(req, toServer);
 
-            Thread.sleep(10000);
+            Thread.sleep(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void callPNDBlock(Channel channel) {
+    public void callPNDBlock() {
         try {
             System.out.println("Call callPNDBlock...");
-            CalculatorServiceGrpc.CalculatorServiceBlockingStub stub = CalculatorServiceGrpc.newBlockingStub(channel);
+            gc = GClient.getInstance(name);
+            CalculatorServiceGrpc.CalculatorServiceBlockingStub stub = CalculatorServiceGrpc.newBlockingStub(gc.getChannel());
             PNDRequest req = PNDRequest.newBuilder().setNumber(120).build();
             stub.primeNumberDecomposition(req).forEachRemaining((PNDResponse pndResp) -> {
                 System.out.println("prime number: " + pndResp.getResult());
@@ -155,10 +166,11 @@ public class CalClient {
         }
     }
 
-    public static void callAverage(Channel channel) {
+    public void callAverage() {
         try {
             System.out.println("Call Average...");
-            CalculatorServiceGrpc.CalculatorServiceStub stub = CalculatorServiceGrpc.newStub(channel);
+            gc = GClient.getInstance(name);
+            CalculatorServiceGrpc.CalculatorServiceStub stub = CalculatorServiceGrpc.newStub(gc.getChannel());
             List<AverageRequest> listAR = new ArrayList<>();
             listAR.add(AverageRequest.newBuilder().setNum(5).build());
             listAR.add(AverageRequest.newBuilder().setNum(10).build());
@@ -190,16 +202,17 @@ public class CalClient {
 
             avgReq.onCompleted();
 
-            Thread.sleep(10000);
+            Thread.sleep(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void callFindMax(Channel channel) {
+    public void callFindMax() {
         try {
             System.out.println("Call FindMax...");
-            CalculatorServiceGrpc.CalculatorServiceStub stub = CalculatorServiceGrpc.newStub(channel);
+            gc = GClient.getInstance(name);
+            CalculatorServiceGrpc.CalculatorServiceStub stub = CalculatorServiceGrpc.newStub(gc.getChannel());
             List<FindMaxRequest> listFM = new ArrayList<>();
             listFM.add(FindMaxRequest.newBuilder().setNum(5).build());
             listFM.add(FindMaxRequest.newBuilder().setNum(10).build());
@@ -234,16 +247,17 @@ public class CalClient {
 
             fmReq.onCompleted();
 
-            Thread.sleep(10000);
+            Thread.sleep(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void callSquare(Channel channel, int num) {
+    public void callSquare(int num) {
         try {
             System.out.println("Call Square...");
-            CalculatorServiceGrpc.CalculatorServiceBlockingStub stub = CalculatorServiceGrpc.newBlockingStub(channel);
+            gc = GClient.getInstance(name);
+            CalculatorServiceGrpc.CalculatorServiceBlockingStub stub = CalculatorServiceGrpc.newBlockingStub(gc.getChannel());
             SquareRequest req = SquareRequest.newBuilder().setNum(num).build();
             SquareResponse resp = stub.square(req);
 

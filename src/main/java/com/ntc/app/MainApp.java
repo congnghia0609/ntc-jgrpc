@@ -17,6 +17,8 @@
 package com.ntc.app;
 
 import com.ntc.grpc.CalServer;
+import com.ntc.grpc.CalculatorImpl;
+import com.ntc.grpc.GServer;
 
 /**
  *
@@ -30,9 +32,14 @@ public class MainApp {
      */
     public static void main(String[] args) {
         try {
-            CalServer calServer = new CalServer();
-            calServer.start();
-            calServer.blockUntilShutdown();
+            // 1. CalServer
+//            CalServer calServer = new CalServer();
+//            calServer.start();
+//            calServer.blockUntilShutdown();
+            
+            // 2. GServer
+            GServer gs = new GServer("tutorial", new CalculatorImpl());
+            gs.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
