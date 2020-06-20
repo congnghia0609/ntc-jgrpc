@@ -1,6 +1,15 @@
 # ntc-jgrpc
 ntc-jgrpc is a example java gRPC
 
+## Maven
+```Xml
+<dependency>
+    <groupId>com.streetcodevn</groupId>
+    <artifactId>ntc-jgrpc</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
 ## gRPC Server
 Example CalculatorService Server:  
 ```java
