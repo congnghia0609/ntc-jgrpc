@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ntc.grpc;
+package com.ntc.app.example;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;

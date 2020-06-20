@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package com.ntc.grpc;
+package com.ntc.app.example;
 
+import com.ntc.grpc.GClient;
 import com.ntc.ngrpc.AverageRequest;
 import com.ntc.ngrpc.AverageResponse;
 import com.ntc.ngrpc.CalculatorServiceGrpc;

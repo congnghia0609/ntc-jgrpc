@@ -16,8 +16,8 @@
 
 package com.ntc.app;
 
-import com.ntc.grpc.CalServer;
-import com.ntc.grpc.CalculatorImpl;
+import com.ntc.app.example.CalServer;
+import com.ntc.app.example.CalculatorImpl;
 import com.ntc.grpc.GServer;
 
 /**

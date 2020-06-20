@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ntc.grpc;
+package com.ntc.app.example;
 
 import com.ntc.ngrpc.*;
 import io.grpc.Channel;

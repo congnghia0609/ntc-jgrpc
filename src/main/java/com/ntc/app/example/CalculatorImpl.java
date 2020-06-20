@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ntc.grpc;
+package com.ntc.app.example;
 
 import com.ntc.ngrpc.*;
 import io.grpc.Context;
