@@ -1,6 +1,84 @@
 # ntc-jgrpc
 ntc-jgrpc is a example java gRPC
 
+## gRPC Server
+Example CalculatorService Server:  
+```java
+public class MainApp {
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        try {
+            // 2. GServer
+            GServer gs = new GServer("tutorial", new CalculatorImpl());
+            gs.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+## gRPC Client
+Example CalculatorService Client:  
+```java
+public class CalGClient {
+    private static final Logger log = LoggerFactory.getLogger(CalGClient.class);
+    
+    private String name;
+    private GClient gc;
+
+    public String getName() {
+        return name;
+    }
+
+    public GClient getGClient() {
+        return gc;
+    }
+
+    public CalGClient(String name) throws SSLException {
+        this.name = name;
+        gc = GClient.getInstance(name);
+    }
+    
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        try {
+            CalGClient cgc = new CalGClient("tutorial");
+            
+            cgc.callSum();
+            
+            cgc.shutdown();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void shutdown() {
+        if (gc != null) {
+            gc.shutdown();
+        }
+    }
+
+    public void callSum() {
+        try {
+            System.out.println("Call sum...");
+            gc = GClient.getInstance(name);
+            CalculatorServiceGrpc.CalculatorServiceBlockingStub stub = CalculatorServiceGrpc.newBlockingStub(gc.getChannel());
+            SumRequest req = SumRequest.newBuilder().setNum1(3).setNum2(5).build();
+            SumResponse resp = stub.sum(req);
+            log.info("sum api response " + resp.getResult());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
 ## HAProxy Config Load Balancer for gRPC Server
 ```bash
 frontend grpc_fe
@@ -83,3 +161,5 @@ http {
 }
 ```
 
+## License
+This code is under the [Apache License v2](https://www.apache.org/licenses/LICENSE-2.0).  
