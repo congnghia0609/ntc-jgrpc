@@ -16,9 +16,9 @@
 
 package com.ntc.app;
 
-import com.ntc.app.example.CalServer;
-import com.ntc.app.example.CalculatorImpl;
-import com.ntc.grpc.GServer;
+//import com.ntc.app.example.CalServer;
+//import com.ntc.app.example.CalculatorImpl;
+//import com.ntc.grpc.GServer;
 
 /**
  *
@@ -38,8 +38,8 @@ public class MainApp {
 //            calServer.blockUntilShutdown();
             
             // 2. GServer
-            GServer gs = new GServer("tutorial", new CalculatorImpl());
-            gs.start();
+//            GServer gs = new GServer("tutorial", new CalculatorImpl());
+//            gs.start();
         } catch (Exception e) {
             e.printStackTrace();
         }

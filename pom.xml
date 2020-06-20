@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.vallicon</groupId>
+    <groupId>com.streetcodevn</groupId>
     <artifactId>ntc-jgrpc</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
@@ -99,15 +99,15 @@
     
     <build>
         <finalName>${project.artifactId}-${project.version}</finalName>
-        <extensions>
+<!--        <extensions>
             <extension>
                 <groupId>kr.motd.maven</groupId>
                 <artifactId>os-maven-plugin</artifactId>
                 <version>1.6.2</version>
             </extension>
-        </extensions>
+        </extensions>-->
         <plugins>
-            <plugin>
+<!--            <plugin>
                 <groupId>org.xolstice.maven.plugins</groupId>
                 <artifactId>protobuf-maven-plugin</artifactId>
                 <version>0.6.1</version>
@@ -124,7 +124,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
             
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
