@@ -6,7 +6,7 @@
     <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>ntc-jgrpc</name>
-    <description>ntc-jgrpc is a example java gRPC</description>
+    <description>ntc-jgrpc is an example java gRPC</description>
     <url>https://github.com/congnghia0609/ntc-jgrpc</url>
     
     <properties>
@@ -65,7 +65,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13</version>
+            <version>4.13.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -77,17 +77,17 @@
         <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-netty-shaded</artifactId>
-            <version>1.30.0</version>
+            <version>1.32.1</version>
         </dependency>
         <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-protobuf</artifactId>
-            <version>1.30.0</version>
+            <version>1.32.1</version>
         </dependency>
         <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-stub</artifactId>
-            <version>1.30.0</version>
+            <version>1.32.1</version>
         </dependency>
         <dependency> <!-- necessary for Java 9+ -->
             <groupId>org.apache.tomcat</groupId>
@@ -99,7 +99,7 @@
     
     <build>
         <finalName>${project.artifactId}-${project.version}</finalName>
-<!--        <extensions>
+        <!--        <extensions>
             <extension>
                 <groupId>kr.motd.maven</groupId>
                 <artifactId>os-maven-plugin</artifactId>
@@ -107,7 +107,7 @@
             </extension>
         </extensions>-->
         <plugins>
-<!--            <plugin>
+            <!--            <plugin>
                 <groupId>org.xolstice.maven.plugins</groupId>
                 <artifactId>protobuf-maven-plugin</artifactId>
                 <version>0.6.1</version>

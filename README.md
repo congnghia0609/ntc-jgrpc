@@ -1,5 +1,5 @@
 # ntc-jgrpc
-ntc-jgrpc is a example java gRPC
+ntc-jgrpc is an example java gRPC
 
 ## Maven
 ```Xml
